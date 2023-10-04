@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using NotesApp.Models.AutoMapper;
 using NotesApp.Models.DB;
+using NotesApp.Models.Manager;
 using NotesApp.Models.Repository;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +14,9 @@ builder.Services.AddDbContext<NoteDbContext>(options =>
 {
     options.UseNpgsql(connectionString);
 });
-builder.Services.AddTransient<INoteRepository, NoteRepository>();
+builder.Services.AddScoped<INoteRepository, NoteRepository>();
+builder.Services.AddTransient<INoteManager, NoteManager>();
+builder.Services.AddAutoMapper(typeof(NoteProfile));
 
 var app = builder.Build();
 

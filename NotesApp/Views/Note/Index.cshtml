@@ -1,7 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using NotesApp.Models.DTO;
+@model IEnumerable<NoteDto>;
+
+<!DOCTYPE html>
 <html>
 <head>
     <title>Notes</title>
+    <link rel="stylesheet" href="~/css/style.css">
 </head>
 <body>
     <div class="header">
@@ -15,6 +19,22 @@
             <div>Total notes: @{ }</div>
         </div>
     </div>
+    <div class="Notes">
+        @{
+            foreach (NoteDto noteDto in Model)
+            {
+                <div class="notes-note note">
+                    <div class="note-title">Note title @noteDto.Title</div>
+                    <div class="note-created date"> Created @noteDto.CreationDate.Date.ToShortDateString()</div>
+                    <button class="note-hide-button">View note</button>
+                    <div class="note-text">
+                        <p>@noteDto.Text</p>
+                    </div>
+                </div>
+            }
+        }
+    </div>
 
+ <script src="~/js/VievHide.js"></script>
 </body>
 </html>
