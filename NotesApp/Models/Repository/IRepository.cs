@@ -2,9 +2,10 @@
 {
     public interface IRepository<T>
     {
-        bool Create(T entity);
-        T GetById(int id);
-        void Update(T entity);
-        void Delete(int id);
+        Task<bool> Create(T entity);
+        Task<T?> GetById(int id);
+        Task<bool> Update(T entity);
+        Task<bool> Delete(T entity);
+        Task Save();
     }
 }

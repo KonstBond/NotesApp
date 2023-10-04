@@ -1,4 +1,4 @@
-﻿namespace NotesApp.Models.Entities
+﻿namespace NotesApp.Models.DB.Entities
 {
     public class Note
     {
