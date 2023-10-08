@@ -1,20 +1,47 @@
-﻿<!DOCTYPE html>
+﻿@using NotesApp.Models.DTO;
+@model IEnumerable<NoteDto>;
+
+<!DOCTYPE html>
 <html>
 <head>
     <title>Notes</title>
+    <link rel="stylesheet" href="~/css/style.css">
 </head>
 <body>
     <div class="header">
         <div class="header-new-note">
-            <a href="#">New Note</a>
+            <a asp-action="newNote">New Note</a>
         </div>
-        <div class="header-search-term">
-            <input type="text"/>
+        <div class="header-search search">
+            <input type="text" class="search-input" id="inputSearch" placeholder="Find note...">
         </div>
         <div class="header-total-notes">
-            <div>Total notes: @{ }</div>
+            <div>Total notes: @Model.Count()</div>
         </div>
     </div>
+    <div class="Notes">
+        @{
+            foreach (NoteDto noteDto in Model.OrderByDescending(note => note.CreationDate.Ticks))
+            {
+                <div class="notes-note note">
+                    <div class="note-title">@noteDto.Title</div>
+                    <div class="note-created-date"> Created @noteDto.CreationDate.Date.ToShortDateString()</div>
+                    <button class="note-hide-button">View note</button>
+                    <div class="note-edit">
+                        <a href="@Url.Action("EditNote", new { noteTitle = noteDto.Title })">Edit note</a>
+                    </div>
+                    <div class="note-delete">
+                        <a href="@Url.Action("DeleteNote", new { noteTitle = noteDto.Title })">Delete note</a>
+                    </div>
+                    <div class="note-text">
+                        <p>@noteDto.Text</p>
+                    </div>
+                </div>
+            }
+        }
+    </div>
 
+ <script src="~/js/ViewHide.js"></script>
+ <script src="~/js/Search.js"></script>
 </body>
 </html>

@@ -1,0 +1,42 @@
+.header {
+    background-color: darkgray;
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding: 10px;
+}
+.header-new-note {
+    margin-top: 6px;
+    width: 100px;
+    height: 10px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.header-new-note a {
+    background-color: white;
+    text-decoration: none;
+    color: black;
+    width: 100%
+}
+
+.header-new-note a:hover {
+    background-color: #2980b9;
+    color: white;
+}
+
+.note {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+}
+
+.search-input{
+    width: 400px;
+}
+
+
+.note-text {
+    display: none;
+}

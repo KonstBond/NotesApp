@@ -1,18 +1,27 @@
+using Microsoft.EntityFrameworkCore;
+using NotesApp.Models.AutoMapper;
+using NotesApp.Models.DB;
+using NotesApp.Models.Manager;
+using NotesApp.Models.Middleware;
+using NotesApp.Models.Repository;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<NoteDbContext>(options =>
+{
+    options.UseNpgsql(connectionString);
+});
+builder.Services.AddScoped<INoteRepository, NoteRepository>();
+builder.Services.AddTransient<INoteManager, NoteManager>();
+builder.Services.AddAutoMapper(typeof(NoteProfile));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
 
+app.UseMiddleware<ExceptionHandleMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
