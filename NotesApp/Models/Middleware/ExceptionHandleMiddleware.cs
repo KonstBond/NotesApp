@@ -1,4 +1,5 @@
 ﻿using NotesApp.Models.DTO;
+using Npgsql;
 using System.Data.SqlTypes;
 using System.Net;
 
@@ -23,15 +24,18 @@ namespace NotesApp.Models.Middleware
             {
                 await _next.Invoke(httpContext);
             }
-            catch (SqlTypeException ex)
+            catch (ArgumentException ex)
             {
-                await HandleExceptionAsync(
-                    httpContext,
-                    ex.Message,
-                    HttpStatusCode.InternalServerError,
-                    "Error with data base");
+                await HandleExceptionAsync(httpContext, ex.Message, (HttpStatusCode)400, "Error with args");
             }
-            catch ()
+            catch(SqlNullValueException ex)
+            {
+                await HandleExceptionAsync(httpContext, ex.Message, (HttpStatusCode)404, "In database value not found");
+            }
+            catch (NpgsqlException ex)
+            {
+                await HandleExceptionAsync(httpContext, ex.Message, (HttpStatusCode)500, "Error with data base");
+            }
         }
 
         private async Task HandleExceptionAsync(

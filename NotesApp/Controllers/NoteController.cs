@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using NotesApp.Models.DTO;
 using NotesApp.Models.Manager;
-using System.ComponentModel.DataAnnotations;
 
 namespace NotesApp.Controllers
 {
@@ -46,6 +45,27 @@ namespace NotesApp.Controllers
                 }
             }
             return BadRequest(message);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditNote(string noteTitle)
+        {
+            NoteDto noteDto = await _noteManager.FindNoteByTitle(noteTitle);
+            return View(noteDto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditNote(NoteDto noteDto)
+        {
+            string oldNoteTitle = HttpContext.Request.Query["noteTitle"]!;
+            await _noteManager.EditNote(noteDto, oldNoteTitle);
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> DeleteNote(string noteTitle)
+        {
+            await _noteManager.DeleteNote(noteTitle);
+            return RedirectToAction("Index");
         }
     }
 }

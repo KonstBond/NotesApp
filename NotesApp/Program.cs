@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using NotesApp.Models.AutoMapper;
 using NotesApp.Models.DB;
 using NotesApp.Models.Manager;
+using NotesApp.Models.Middleware;
 using NotesApp.Models.Repository;
 using System.Reflection;
 
@@ -21,7 +22,7 @@ builder.Services.AddAutoMapper(typeof(NoteProfile));
 var app = builder.Build();
 
 
-
+app.UseMiddleware<ExceptionHandleMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

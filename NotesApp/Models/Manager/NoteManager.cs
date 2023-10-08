@@ -2,6 +2,8 @@
 using NotesApp.Models.DB.Entities;
 using NotesApp.Models.DTO;
 using NotesApp.Models.Repository;
+using Npgsql;
+using System.Data.SqlTypes;
 
 namespace NotesApp.Models.Manager
 {
@@ -22,12 +24,12 @@ namespace NotesApp.Models.Manager
 
         public async Task CreateNewNote(NoteDto noteDto)
         {
-            if (_noteRepository.GetByTitle(noteDto.Title) is null)
+            if (await _noteRepository.GetByTitle(noteDto.Title) is null)
             {
                 await WriteNoteToDB(noteDto);
                 _logger.LogInformation("Note has been created", noteDto);
-            }     
-            else 
+            }
+            else
                 throw new ArgumentException($"Note with title {noteDto.Title} already exists", noteDto.Title);
         }
 
@@ -39,9 +41,9 @@ namespace NotesApp.Models.Manager
                 await _noteRepository.Create(note);
                 await _noteRepository.Save();
             }
-            catch (Exception ex)
+            catch (NpgsqlException ex)
             {
-                throw new Exception("Note has not created", ex);
+                throw new NpgsqlException("Note has not created", ex);
             }
         }
 
@@ -52,14 +54,48 @@ namespace NotesApp.Models.Manager
             return note;
         }
 
-        public void DeleteNote()
+        public async Task<NoteDto> FindNoteByTitle(string title)
         {
-            throw new NotImplementedException();
+            Note? note = await _noteRepository.GetByTitle(title);
+            if (note is not null)
+                return _mapper.Map<NoteDto>(note);
+            else
+                throw new SqlNullValueException($"Note {title} not exists");
         }
 
-        public void EditNote(NoteDto noteDto)
+        public async Task EditNote(NoteDto newNoteDto, string oldNoteTitle)
         {
-            throw new NotImplementedException();
+            Note? note = await _noteRepository.GetByTitle(oldNoteTitle);
+            if (note is not null)
+                await EditNote(note, newNoteDto);
+            else
+                throw new SqlNullValueException($"Note {oldNoteTitle} not found");
+        }
+
+        private async Task EditNote(Note note, NoteDto newNoteDto)
+        {
+            if  (await _noteRepository.GetByTitle(newNoteDto.Title) is null)
+            {
+                note.Title = newNoteDto.Title;
+                note.Text = newNoteDto.Text;
+                note.CreationDate = DateTime.Now.Date;
+                await _noteRepository.Update(note);
+                await _noteRepository.Save();
+            }   
+            else
+                throw new ArgumentException($"Note with title: {newNoteDto.Title} already exists");
+        }
+
+        public async Task DeleteNote(string noteTitle)
+        {
+            Note? note = await _noteRepository.GetByTitle(noteTitle);
+            if (note is not null)
+            {
+                await _noteRepository.Delete(note);
+                await _noteRepository.Save();
+            }
+            else
+                throw new SqlNullValueException($"Note {noteTitle} not found");
         }
 
         public async Task<IEnumerable<NoteDto>> GetAllNotes()

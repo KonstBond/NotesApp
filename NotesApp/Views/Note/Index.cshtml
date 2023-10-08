@@ -21,19 +21,21 @@
     </div>
     <div class="Notes">
         @{
-            foreach (NoteDto noteDto in Model)
+            foreach (NoteDto noteDto in Model.OrderByDescending(note => note.CreationDate.Ticks))
             {
                 <div class="notes-note note">
                     <div class="note-title">Note title @noteDto.Title</div>
                     <div class="note-created-date"> Created @noteDto.CreationDate.Date.ToShortDateString()</div>
                     <button class="note-hide-button">View note</button>
                     <div class="note-edit">
-                        <a asp-action="#" as>Edit note</a>
+                        <a href="@Url.Action("EditNote", new { noteTitle = noteDto.Title })">Edit note</a>
+                    </div>
+                    <div class="note-delete">
+                        <a href="@Url.Action("DeleteNote", new { noteTitle = noteDto.Title })">Delete note</a>
                     </div>
                     <div class="note-text">
                         <p>@noteDto.Text</p>
                     </div>
-                    
                 </div>
             }
         }

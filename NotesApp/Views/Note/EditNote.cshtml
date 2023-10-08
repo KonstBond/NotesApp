@@ -1,0 +1,23 @@
+﻿@using NotesApp.Models.DTO;
+@model NoteDto
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Edit Note</title>
+</head>
+<body>
+    <div class="edit-note-wrapper">
+        <form class="edit-note-wrapper-form form" method="post">
+            <div class="form-label">Title</div>
+            <input class="form-input" asp-for=Title type="text" />
+            <br />
+            <div class="form-label">Text</div>
+            <input class="form-input" asp-for="Text" type="text" />
+            <br />
+            <input class="form-submit" type="submit" value="Edit note" />
+        </form>
+    </div>
+</body>
+</html>
