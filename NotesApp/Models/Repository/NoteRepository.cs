@@ -13,25 +13,17 @@ namespace NotesApp.Models.Repository
             _dbContext = dbContext;
         }
 
-        public async Task<bool> Create(Note note)
+        public async Task Create(Note note)
         {
-            if (await GetByTitle(note.Title) is not null)
-            {
-                await _dbContext.AddAsync(note);
-                return true;
-            }
-            else throw new ArgumentException($"Note with title {note.Title} already exists", note.Title);
+            await _dbContext.AddAsync(note);
         }
 
-        public async Task<bool> Delete(Note note)
+
+        public async Task Delete(Note note)
         {
-            if (note is not null)
-            {
-                await Task.Run(() => _dbContext.Notes.Remove(note));
-                return true;
-            }
-            else throw new ArgumentException($"Note {note} not exists", note?.ToString());
+            await Task.Run(() => _dbContext.Notes.Remove(note));
         }
+            
 
         public async Task<IEnumerable<Note>> GetAll()
         {
@@ -50,16 +42,14 @@ namespace NotesApp.Models.Repository
                 .FirstOrDefaultAsync(note => note.Title == title);
         }
 
-        public async Task<bool> Update(Note note)
+        public async Task Update(Note note)
         {
-            if (note is not null)
-            {
-                await Task.Run(() => _dbContext.Update(note));
-                return true;
-            }
-            else throw new ArgumentException($"Note with title {note?.Title} not exists", note?.Title);
+            await Task.Run(() => _dbContext.Update(note));
         }
 
-        public async Task Save() => await _dbContext.SaveChangesAsync();
+        public async Task Save()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

@@ -10,13 +10,13 @@
 <body>
     <div class="header">
         <div class="header-new-note">
-            <a href="#">New Note</a>
+            <a asp-action="newNote">New Note</a>
         </div>
         <div class="header-search-term">
             <input type="text"/>
         </div>
         <div class="header-total-notes">
-            <div>Total notes: @{ }</div>
+            <div>Total notes: @Model.Count()</div>
         </div>
     </div>
     <div class="Notes">
@@ -25,11 +25,15 @@
             {
                 <div class="notes-note note">
                     <div class="note-title">Note title @noteDto.Title</div>
-                    <div class="note-created date"> Created @noteDto.CreationDate.Date.ToShortDateString()</div>
+                    <div class="note-created-date"> Created @noteDto.CreationDate.Date.ToShortDateString()</div>
                     <button class="note-hide-button">View note</button>
+                    <div class="note-edit">
+                        <a asp-action="#" as>Edit note</a>
+                    </div>
                     <div class="note-text">
                         <p>@noteDto.Text</p>
                     </div>
+                    
                 </div>
             }
         }

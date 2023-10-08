@@ -10,38 +10,45 @@ namespace NotesApp.Models.Manager
         private readonly INoteRepository _noteRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<NoteManager> _logger;
-        public NoteManager(INoteRepository noteRepository, IMapper mapper)
+        public NoteManager(
+            INoteRepository noteRepository,
+            IMapper mapper,
+            ILogger<NoteManager> logger)
         {
             _noteRepository = noteRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
-        public async void CreateNewNote(NoteDto noteDto)
+        public async Task CreateNewNote(NoteDto noteDto)
         {
-            Note? note = await _noteRepository.GetByTitle(noteDto.Title);
-            if (note is null)
+            if (_noteRepository.GetByTitle(noteDto.Title) is null)
             {
-                note = DataEntry(noteDto);
-                try
-                {
-                    if (await _noteRepository.Create(note))
-                        await _noteRepository.Save();
-                }
-                catch (ArgumentException ex)
-                {
-                    _logger.LogError(ex, $"Note has not created", noteDto);
-                }  
+                await WriteNoteToDB(noteDto);
+                _logger.LogInformation("Note has been created", noteDto);
+            }     
+            else 
+                throw new ArgumentException($"Note with title {noteDto.Title} already exists", noteDto.Title);
+        }
+
+        private async Task WriteNoteToDB(NoteDto noteDto)
+        {
+            Note note = DataEntry(noteDto);
+            try
+            {
+                await _noteRepository.Create(note);
+                await _noteRepository.Save();
             }
-            else
+            catch (Exception ex)
             {
-                //Такая запись уже есть в базе
+                throw new Exception("Note has not created", ex);
             }
         }
 
-        public Note DataEntry(NoteDto noteDto)
+        private Note DataEntry(NoteDto noteDto)
         {
             Note note = _mapper.Map<Note>(noteDto);
-            note.CreationDate = DateTime.Now;
+            note.CreationDate = DateTime.Now.Date;
             return note;
         }
 

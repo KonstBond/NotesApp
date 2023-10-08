@@ -15,7 +15,7 @@ namespace NotesApp.Models.DB
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Note>(Note => Note.HasKey(property => property.Id));
+            builder.Entity<Note>(note => note.HasKey(property => property.Id));
             base.OnModelCreating(builder);
         }
     }
