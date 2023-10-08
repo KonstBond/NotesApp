@@ -12,8 +12,8 @@
         <div class="header-new-note">
             <a asp-action="newNote">New Note</a>
         </div>
-        <div class="header-search-term">
-            <input type="text"/>
+        <div class="header-search search">
+            <input type="text" class="search-input" id="inputSearch" placeholder="Find note...">
         </div>
         <div class="header-total-notes">
             <div>Total notes: @Model.Count()</div>
@@ -24,7 +24,7 @@
             foreach (NoteDto noteDto in Model.OrderByDescending(note => note.CreationDate.Ticks))
             {
                 <div class="notes-note note">
-                    <div class="note-title">Note title @noteDto.Title</div>
+                    <div class="note-title">@noteDto.Title</div>
                     <div class="note-created-date"> Created @noteDto.CreationDate.Date.ToShortDateString()</div>
                     <button class="note-hide-button">View note</button>
                     <div class="note-edit">
@@ -41,6 +41,7 @@
         }
     </div>
 
- <script src="~/js/VievHide.js"></script>
+ <script src="~/js/ViewHide.js"></script>
+ <script src="~/js/Search.js"></script>
 </body>
 </html>

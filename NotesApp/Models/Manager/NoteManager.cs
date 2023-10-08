@@ -67,7 +67,10 @@ namespace NotesApp.Models.Manager
         {
             Note? note = await _noteRepository.GetByTitle(oldNoteTitle);
             if (note is not null)
+            {
                 await EditNote(note, newNoteDto);
+                _logger.LogInformation($"Note {oldNoteTitle} has been edited", newNoteDto);
+            }                
             else
                 throw new SqlNullValueException($"Note {oldNoteTitle} not found");
         }
@@ -93,6 +96,7 @@ namespace NotesApp.Models.Manager
             {
                 await _noteRepository.Delete(note);
                 await _noteRepository.Save();
+                _logger.LogInformation($"Note {noteTitle} has been deleted", note);
             }
             else
                 throw new SqlNullValueException($"Note {noteTitle} not found");

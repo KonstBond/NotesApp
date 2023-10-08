@@ -7,8 +7,7 @@ namespace NotesApp.Models.DB
     {
         public DbSet<Note> Notes { get; set; }
 
-        public NoteDbContext(DbContextOptions<NoteDbContext> options)
-            : base(options)
+        public NoteDbContext(DbContextOptions<NoteDbContext> options) : base(options)
         {
             Database.EnsureCreated();
         }

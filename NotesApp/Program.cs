@@ -4,7 +4,6 @@ using NotesApp.Models.DB;
 using NotesApp.Models.Manager;
 using NotesApp.Models.Middleware;
 using NotesApp.Models.Repository;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
